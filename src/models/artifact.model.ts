@@ -2,11 +2,12 @@ import {Schema, model} from 'mongoose';
 
 const artifactSchema = new Schema({
     name: {type: String, required: true},
-    description: String,
+    description: {type: String, required: true},
     power: String,
     owner: {
         type: Schema.Types.ObjectId,
-        ref: "Character"
+        ref: "Character",
+        required: true
     }
 })
 
