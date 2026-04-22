@@ -26,6 +26,6 @@
     "typescript": "^6.0.3"
   },
   "scripts": {
-    "dev": "tsx --watch src/index.ts"
+    "dev": "tsx --watch src/app.ts"
   }
 }
