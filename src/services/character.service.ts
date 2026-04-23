@@ -7,6 +7,7 @@ import {
     getCharacters,
     updateCharacterById,
 } from "../repositories/character.repository";
+import { validateObjectId } from "../utils/validate-object-id";
 
 type CreateCharacterInput = {
     name?: string;
@@ -25,6 +26,8 @@ const validateBestFriend = async (bestFriendId?: string) => {
         return;
     }
 
+    validateObjectId(bestFriendId, "id najlepszego przyjaciela");
+
     const bestFriend = await getCharacterById(bestFriendId);
 
     if (!bestFriend) {
@@ -37,6 +40,8 @@ export const getAllCharacters = async () => {
 };
 
 export const getCharacterDetails = async (id: string) => {
+    validateObjectId(id);
+
     const character = await getCharacterById(id);
 
     if (!character) {
@@ -71,6 +76,8 @@ export const createCharacterService = async (data: CreateCharacterInput) => {
 };
 
 export const updateCharacter = async (id: string, data: UpdateCharacterInput) => {
+    validateObjectId(id);
+
     const character = await getCharacterById(id);
 
     if (!character) {
@@ -138,6 +145,8 @@ export const updateCharacter = async (id: string, data: UpdateCharacterInput) =>
 };
 
 export const deleteCharacter = async (id: string) => {
+    validateObjectId(id);
+
     const character = await getCharacterById(id);
 
     if (!character) {

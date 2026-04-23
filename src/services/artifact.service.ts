@@ -7,6 +7,7 @@ import {
     updateArtifactById,
 } from "../repositories/artifact.repository";
 import { getCharacterById } from "../repositories/character.repository";
+import { validateObjectId } from "../utils/validate-object-id";
 
 type CreateArtifactInput = {
     name?: string;
@@ -27,6 +28,8 @@ const normalizeArtifactData = (data: CreateArtifactInput) => {
         throw new HttpError(400, "Brakuje wymaganych danych artefaktu");
     }
 
+    validateObjectId(owner, "id wlasciciela");
+
     return {
         name,
         description,
@@ -40,6 +43,8 @@ export const getAllArtifacts = async () => {
 };
 
 export const getArtifactDetails = async (id: string) => {
+    validateObjectId(id);
+
     const artifact = await getArtifactById(id);
 
     if (!artifact) {
@@ -61,6 +66,8 @@ export const createArtifactService = async (data: CreateArtifactInput) => {
 };
 
 export const updateArtifact = async (id: string, data: UpdateArtifactInput) => {
+    validateObjectId(id);
+
     const artifact = await getArtifactById(id);
 
     if (!artifact) {
@@ -100,6 +107,8 @@ export const updateArtifact = async (id: string, data: UpdateArtifactInput) => {
             throw new HttpError(400, "Wlasciciel artefaktu jest wymagany");
         }
 
+        validateObjectId(ownerId, "id wlasciciela");
+
         const owner = await getCharacterById(ownerId);
 
         if (!owner) {
@@ -123,6 +132,8 @@ export const updateArtifact = async (id: string, data: UpdateArtifactInput) => {
 };
 
 export const deleteArtifact = async (id: string) => {
+    validateObjectId(id);
+
     const artifact = await getArtifactById(id);
 
     if (!artifact) {
