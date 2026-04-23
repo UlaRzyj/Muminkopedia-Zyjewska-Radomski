@@ -1,24 +1,72 @@
-import {createCharacter, getCharacters} from "../repositories/character.repository";
-import {ArtifactModel} from "../models/artifact.model";
-import {CharacterModel} from "../models/character.model";
+import { ArtifactModel } from "../models/artifact.model";
+import {
+    createCharacter,
+    deleteCharacterById,
+    getCharacterById,
+    getCharacters,
+} from "../repositories/character.repository";
 
-export const getAllCharacters = () => {
-    return getCharacters();
-}
+const ALLOWED_SPECIES = ["Muminek", "Miukk", "Paszczak"] as const;
 
-export const createCharacterService = (data: any) => {
-    if(!data.name || !data.destription || !data.species || data.isHibernating === undefined) {
-        throw new Error("Brakuje wymaganych danych");
+type Species = (typeof ALLOWED_SPECIES)[number];
+
+type CreateCharacterInput = {
+    name?: string;
+    description?: string;
+    destription?: string;
+    species?: string;
+    isHibernating?: boolean;
+    bestFriend?: string;
+};
+
+const normalizeCharacterData = (data: CreateCharacterInput) => {
+    const name = data.name?.trim();
+    const description = data.description?.trim() ?? data.destription?.trim();
+    const species = data.species?.trim() as Species | undefined;
+
+    if (!name || !description || !species || data.isHibernating === undefined) {
+        throw new Error("Brakuje wymaganych danych postaci");
     }
 
-    return createCharacter(data);
-}
+    if (!ALLOWED_SPECIES.includes(species)) {
+        throw new Error("Niepoprawny gatunek postaci");
+    }
+
+    return {
+        name,
+        destription: description,
+        species,
+        isHibernating: data.isHibernating,
+        bestFriend: data.bestFriend,
+    };
+};
+
+export const getAllCharacters = async () => {
+    return await getCharacters();
+};
+
+export const createCharacterService = async (data: CreateCharacterInput) => {
+    const normalizedData = normalizeCharacterData(data);
+
+    if (normalizedData.bestFriend) {
+        const bestFriend = await getCharacterById(normalizedData.bestFriend);
+
+        if (!bestFriend) {
+            throw new Error("Podany najlepszy przyjaciel nie istnieje");
+        }
+    }
+
+    return await createCharacter(normalizedData);
+};
 
 export const deleteCharacter = async (id: string) => {
-    await ArtifactModel.updateMany(
-        {owner: id},
-        {owner: null}
-    );
+    const character = await getCharacterById(id);
 
-    return CharacterModel.findByIdAndDelete(id);
-}
+    if (!character) {
+        throw new Error("Postać nie istnieje");
+    }
+
+    await ArtifactModel.deleteMany({ owner: id });
+
+    return await deleteCharacterById(id);
+};
