@@ -29,8 +29,14 @@
 
 ### Character
 - GET /api/characters
+- GET /api/characters/:id
 - POST /api/characters
+- PATCH /api/characters/:id
+- DELETE /api/characters/:id
 
 ### Artifact
 - GET /api/artifacts
+- GET /api/artifacts/:id
 - POST /api/artifacts
+- PATCH /api/artifacts/:id
+- DELETE /api/artifacts/:id

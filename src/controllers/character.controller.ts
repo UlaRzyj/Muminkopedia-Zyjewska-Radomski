@@ -3,6 +3,8 @@ import {
     createCharacterService,
     deleteCharacter,
     getAllCharacters,
+    getCharacterDetails,
+    updateCharacter,
 } from "../services/character.service";
 import { asyncHandler } from "../utils/async-handler";
 
@@ -14,6 +16,16 @@ export const getCharacters = asyncHandler(async (_req: Request, res: Response) =
 export const createCharacter = asyncHandler(async (req: Request, res: Response) => {
     const character = await createCharacterService(req.body);
     res.status(201).json(character);
+});
+
+export const getCharacterById = asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
+    const character = await getCharacterDetails(req.params.id);
+    res.status(200).json(character);
+});
+
+export const updateCharacterById = asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
+    const character = await updateCharacter(req.params.id, req.body);
+    res.status(200).json(character);
 });
 
 export const removeCharacter = asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
