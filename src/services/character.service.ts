@@ -1,3 +1,4 @@
+import { HttpError } from "../errors/http-error";
 import { deleteArtifactsByOwner } from "../repositories/artifact.repository";
 import {
     createCharacter,
@@ -9,7 +10,6 @@ import {
 type CreateCharacterInput = {
     name?: string;
     description?: string;
-    destription?: string;
     species?: string;
     isHibernating?: boolean;
     bestFriend?: string;
@@ -21,30 +21,30 @@ export const getAllCharacters = async () => {
 
 export const createCharacterService = async (data: CreateCharacterInput) => {
     const name = data.name?.trim();
-    const description = data.description?.trim() || data.destription?.trim();
+    const description = data.description?.trim();
     const species = data.species?.trim();
 
     if (!name || !description || !species || data.isHibernating === undefined) {
-        throw new Error("Brakuje wymaganych danych postaci");
+        throw new HttpError(400, "Brakuje wymaganych danych postaci");
     }
 
     if (!["Muminek", "Miukk", "Paszczak"].includes(species)) {
-        throw new Error("Niepoprawny gatunek postaci");
+        throw new HttpError(400, "Niepoprawny gatunek postaci");
     }
 
     if (data.bestFriend) {
         const bestFriend = await getCharacterById(data.bestFriend);
 
         if (!bestFriend) {
-            throw new Error("Podany najlepszy przyjaciel nie istnieje");
+            throw new HttpError(404, "Podany najlepszy przyjaciel nie istnieje");
         }
     }
 
     return await createCharacter({
         name,
-        destription: description,
+        description,
         species,
-        isHibernating: data.isHibernating!,
+        isHibernating: data.isHibernating,
         bestFriend: data.bestFriend,
     });
 };
@@ -53,7 +53,7 @@ export const deleteCharacter = async (id: string) => {
     const character = await getCharacterById(id);
 
     if (!character) {
-        throw new Error("Postać nie istnieje");
+        throw new HttpError(404, "Postac nie istnieje");
     }
 
     await deleteArtifactsByOwner(id);

@@ -1,3 +1,4 @@
+import { HttpError } from "../errors/http-error";
 import { createArtifact, getArtifacts } from "../repositories/artifact.repository";
 import { getCharacterById } from "../repositories/character.repository";
 
@@ -15,7 +16,7 @@ const normalizeArtifactData = (data: CreateArtifactInput) => {
     const owner = data.owner?.trim();
 
     if (!name || !description || !owner) {
-        throw new Error("Brakuje wymaganych danych artefaktu");
+        throw new HttpError(400, "Brakuje wymaganych danych artefaktu");
     }
 
     return {
@@ -35,7 +36,7 @@ export const createArtifactService = async (data: CreateArtifactInput) => {
     const owner = await getCharacterById(normalizedData.owner);
 
     if (!owner) {
-        throw new Error("Podany właściciel nie istnieje");
+        throw new HttpError(404, "Podany wlasciciel nie istnieje");
     }
 
     return await createArtifact(normalizedData);

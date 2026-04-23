@@ -19,13 +19,13 @@
 
 ## 2. Plan relacji
 
-- Jeden Character może posiadać wiele Artifactów
-- Każdy Artifact należy do jednego Character (pole: owner)
-- Relacje realizowane są za pomocą ObjectId
+- Jeden Character moze posiadac wiele Artifactow
+- Kazdy Artifact nalezy do jednego Character (pole: owner)
+- Relacje realizowane sa za pomoca ObjectId
 
 ---
 
-## 3. Lista endpointów
+## 3. Lista endpointow
 
 ### Character
 - GET /api/characters

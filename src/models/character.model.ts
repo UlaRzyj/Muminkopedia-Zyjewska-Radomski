@@ -2,7 +2,7 @@ import {Schema, model} from "mongoose";
 
 const characterSchema = new Schema({
     name: {type: String, required: true},
-    destription: {type: String, required: true},
+    description: {type: String, required: true},
     species: {type: String, required: true, enum: ["Muminek", "Miukk", "Paszczak"]},
     isHibernating: {type: Boolean, required: true},
     bestFriend: {

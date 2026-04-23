@@ -4,38 +4,21 @@ import {
     deleteCharacter,
     getAllCharacters,
 } from "../services/character.service";
+import { asyncHandler } from "../utils/async-handler";
 
-export const getCharacters = async (_req: Request, res: Response) => {
-    try {
-        const characters = await getAllCharacters();
-        res.status(200).json(characters);
-    } catch (error) {
-        res.status(500).json({
-            message: error instanceof Error ? error.message : "Blad podczas pobierania postaci",
-        });
-    }
-};
+export const getCharacters = asyncHandler(async (_req: Request, res: Response) => {
+    const characters = await getAllCharacters();
+    res.status(200).json(characters);
+});
 
-export const createCharacter = async (req: Request, res: Response) => {
-    try {
-        const character = await createCharacterService(req.body);
-        res.status(201).json(character);
-    } catch (error) {
-        res.status(400).json({
-            message: error instanceof Error ? error.message : "Blad podczas tworzenia postaci",
-        });
-    }
-};
+export const createCharacter = asyncHandler(async (req: Request, res: Response) => {
+    const character = await createCharacterService(req.body);
+    res.status(201).json(character);
+});
 
-export const removeCharacter = async (req: Request<{ id: string }>, res: Response) => {
-    try {
-        const { id } = req.params;
+export const removeCharacter = asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
+    const { id } = req.params;
 
-        const deletedCharacter = await deleteCharacter(id);
-        res.status(200).json(deletedCharacter);
-    } catch (error) {
-        res.status(400).json({
-            message: error instanceof Error ? error.message : "Blad podczas usuwania postaci",
-        });
-    }
-};
+    const deletedCharacter = await deleteCharacter(id);
+    res.status(200).json(deletedCharacter);
+});

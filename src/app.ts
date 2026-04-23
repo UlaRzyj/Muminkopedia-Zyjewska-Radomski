@@ -1,8 +1,10 @@
-import express from "express";
 import cors from "cors";
-import path from "path";
 import dotenv from "dotenv";
+import express from "express";
+import path from "path";
 import { connectDB } from "./config/db";
+import { globalErrorHandler, notFoundHandler } from "./middlewares/error-handler";
+import artifactRoutes from "./routes/artifacts";
 import characterRoutes from "./routes/characters";
 
 dotenv.config();
@@ -10,14 +12,18 @@ dotenv.config();
 const app = express();
 
 app.use(cors());
-app.use(express.json()); 
+app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "../public")));
+app.use("/api/artifacts", artifactRoutes);
 app.use("/api/characters", characterRoutes);
 
-app.get("/", (req, res) => {
-    res.json({ message: "API Express + TypeScript działa!" });
+app.get("/", (_req, res) => {
+    res.json({ message: "API Express + TypeScript dziala!" });
 });
+
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
 
 const start = async () => {
     try {
@@ -26,7 +32,7 @@ const start = async () => {
         const PORT = process.env.PORT || 5001;
 
         app.listen(PORT, () => {
-            console.log(`Serwer działa na porcie ${PORT}`);
+            console.log(`Serwer dziala na porcie ${PORT}`);
         });
     } catch (error) {
         console.error(error);
